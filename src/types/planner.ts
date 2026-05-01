@@ -6,11 +6,19 @@ export type Category =
   | "生活習慣"
   | "その他";
 
+export type Priority = "high" | "medium" | "low";
+
+export type TimeBlock = "morning" | "afternoon" | "evening" | "night" | "anytime";
+
 export type PlannerItem = {
   id: string;
   title: string;
   memo?: string;
   category: Category;
+  priority: Priority;
+  isImportant: boolean;
+  progress: number;
+  timeBlock: TimeBlock;
   completed: boolean;
   createdAt: string;
 };
