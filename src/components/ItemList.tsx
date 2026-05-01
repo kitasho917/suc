@@ -6,7 +6,7 @@ type ItemListProps = {
   items: PlannerItem[];
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
-  onEdit: (id: string, input: Pick<PlannerItem, "title" | "memo" | "category" | "priority" | "isImportant" | "progress">) => void;
+  onEdit: (id: string, input: Pick<PlannerItem, "title" | "memo" | "category" | "priority" | "isImportant" | "progress" | "timeBlock">) => void;
 };
 
 export function ItemList({ items, onToggle, onDelete, onEdit }: ItemListProps) {

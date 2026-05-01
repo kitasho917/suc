@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
-import { categories, priorities, priorityLabelMap } from "@/lib/categories";
-import { Category, Priority } from "@/types/planner";
+import { categories, priorities, priorityLabelMap, timeBlockLabelMap, timeBlocks } from "@/lib/categories";
+import { Category, Priority, TimeBlock } from "@/types/planner";
 
 type FormInput = {
   title: string;
@@ -9,6 +9,7 @@ type FormInput = {
   priority: Priority;
   isImportant: boolean;
   progress: number;
+  timeBlock: TimeBlock;
 };
 
 type ItemFormProps = {
@@ -23,19 +24,21 @@ export function ItemForm({ onAdd, placeholder }: ItemFormProps) {
   const [priority, setPriority] = useState<Priority>("medium");
   const [isImportant, setIsImportant] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [timeBlock, setTimeBlock] = useState<TimeBlock>("anytime");
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = title.trim();
     if (!trimmed) return;
     const safeProgress = Math.max(0, Math.min(100, Math.round(progress)));
-    onAdd({ title: trimmed, memo: memo.trim() || undefined, category, priority, isImportant, progress: safeProgress });
+    onAdd({ title: trimmed, memo: memo.trim() || undefined, category, priority, isImportant, progress: safeProgress, timeBlock });
     setTitle("");
     setMemo("");
     setCategory("TOEIC");
     setPriority("medium");
     setIsImportant(false);
     setProgress(0);
+    setTimeBlock("anytime");
   };
 
   return (
@@ -50,6 +53,7 @@ export function ItemForm({ onAdd, placeholder }: ItemFormProps) {
           {priorities.map((p) => <option key={p} value={p}>優先度: {priorityLabelMap[p]}</option>)}
         </select>
       </div>
+      <select value={timeBlock} onChange={(e) => setTimeBlock(e.target.value as TimeBlock)} className="w-full rounded-lg border border-gray-200 p-3 text-sm">{timeBlocks.map((tb) => <option key={tb} value={tb}>時間帯: {timeBlockLabelMap[tb]}</option>)}</select>
       <div className="flex items-center justify-between rounded-lg border border-gray-200 p-3 text-sm">
         <label htmlFor="isImportant">最重要タスクに設定</label>
         <input id="isImportant" type="checkbox" checked={isImportant} onChange={(e) => setIsImportant(e.target.checked)} />

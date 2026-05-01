@@ -3,6 +3,9 @@
 import { AppHeader } from "@/components/AppHeader";
 import { BottomNav, Tab } from "@/components/BottomNav";
 import { ItemForm } from "@/components/ItemForm";
+import { CategoryProgressDashboard } from "@/components/CategoryProgressDashboard";
+import { AchievementSummary } from "@/components/AchievementSummary";
+import { TimeSchedule } from "@/components/TimeSchedule";
 import { ItemList } from "@/components/ItemList";
 import { ProgressSummary } from "@/components/ProgressSummary";
 import { TodaySummary } from "@/components/TodaySummary";
@@ -29,6 +32,7 @@ export default function Home() {
     <main className="mx-auto min-h-screen max-w-md space-y-4 p-4 pb-28">
       <AppHeader />
       {activeTab === "today" ? (
+        <>
         <TodaySummary
           remainingCount={remainingCount}
           importantRemainingCount={importantRemainingCount}
@@ -36,6 +40,10 @@ export default function Home() {
           totalCount={todayProgress.totalCount}
           achievementRate={todayProgress.percentage}
         />
+        <CategoryProgressDashboard items={planner.data.todayTodos} />
+        <AchievementSummary totalCount={todayProgress.totalCount} completedCount={todayProgress.completedCount} />
+        <TimeSchedule items={planner.data.todayTodos} />
+        </>
       ) : null}
       <ProgressSummary title={`${current.title}の進捗`} completedCount={progress.completedCount} totalCount={progress.totalCount} />
       <ItemForm
