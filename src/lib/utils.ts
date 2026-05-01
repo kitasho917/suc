@@ -1,4 +1,6 @@
-import { PlannerItem } from "@/types/planner";
+import { PlannerItem, Priority } from "@/types/planner";
+
+export const clampProgress = (progress: number) => Math.max(0, Math.min(100, Math.round(progress)));
 
 export const calculateProgress = (items: PlannerItem[]) => {
   const totalCount = items.length;
@@ -8,4 +10,19 @@ export const calculateProgress = (items: PlannerItem[]) => {
     completedCount,
     percentage: totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100),
   };
+};
+
+const priorityOrder: Record<Priority, number> = {
+  high: 0,
+  medium: 1,
+  low: 2,
+};
+
+export const sortPlannerItems = (items: PlannerItem[]) => {
+  return [...items].sort((a, b) => {
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    if (!a.completed && a.isImportant !== b.isImportant) return a.isImportant ? -1 : 1;
+    if (!a.completed && a.priority !== b.priority) return priorityOrder[a.priority] - priorityOrder[b.priority];
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 };
