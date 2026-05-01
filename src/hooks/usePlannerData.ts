@@ -84,6 +84,8 @@ export function usePlannerData() {
 
   return {
     data,
+    replaceAllData: (nextData: PlannerData) => setData(nextData),
+    resetAllData: () => setData(initialPlannerData),
     addTodayTodo: (item: NewItemInput) => setData((prev) => ({ ...prev, todayTodos: [createItem(item), ...prev.todayTodos] })),
     addWeeklyTodo: (item: NewItemInput) => setData((prev) => ({ ...prev, weeklyTodos: [createItem(item), ...prev.weeklyTodos] })),
     addWeeklyGoal: (item: NewItemInput) => setData((prev) => ({ ...prev, weeklyGoals: [createItem(item), ...prev.weeklyGoals] })),

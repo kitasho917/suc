@@ -11,6 +11,9 @@ import { ProgressSummary } from "@/components/ProgressSummary";
 import { TodaySummary } from "@/components/TodaySummary";
 import { usePlannerData } from "@/hooks/usePlannerData";
 import { calculateProgress } from "@/lib/utils";
+import { loadPlannerData } from "@/lib/storage";
+import { DataManagementPanel } from "@/components/DataManagementPanel";
+import { PlannerData } from "@/types/planner";
 import { useMemo, useState } from "react";
 
 export default function Home() {
@@ -28,23 +31,35 @@ export default function Home() {
   const remainingCount = planner.data.todayTodos.filter((item) => !item.completed).length;
   const importantRemainingCount = planner.data.todayTodos.filter((item) => item.isImportant && !item.completed).length;
 
+  const handleImport = (data: PlannerData) => {
+    if (typeof window === "undefined") return false;
+    try {
+      window.localStorage.setItem("life-planner-mobile-data", JSON.stringify(data));
+      planner.replaceAllData(loadPlannerData());
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   return (
     <main className="mx-auto min-h-screen max-w-md space-y-4 p-4 pb-28">
       <AppHeader />
       {activeTab === "today" ? (
         <>
-        <TodaySummary
-          remainingCount={remainingCount}
-          importantRemainingCount={importantRemainingCount}
-          completedCount={todayProgress.completedCount}
-          totalCount={todayProgress.totalCount}
-          achievementRate={todayProgress.percentage}
-        />
-        <CategoryProgressDashboard items={planner.data.todayTodos} />
-        <AchievementSummary totalCount={todayProgress.totalCount} completedCount={todayProgress.completedCount} />
-        <TimeSchedule items={planner.data.todayTodos} />
+          <TodaySummary
+            remainingCount={remainingCount}
+            importantRemainingCount={importantRemainingCount}
+            completedCount={todayProgress.completedCount}
+            totalCount={todayProgress.totalCount}
+            achievementRate={todayProgress.percentage}
+          />
+          <CategoryProgressDashboard items={planner.data.todayTodos} />
+          <AchievementSummary totalCount={todayProgress.totalCount} completedCount={todayProgress.completedCount} />
+          <TimeSchedule items={planner.data.todayTodos} />
         </>
       ) : null}
+      <DataManagementPanel data={planner.data} onImport={handleImport} onReset={planner.resetAllData} />
       <ProgressSummary title={`${current.title}の進捗`} completedCount={progress.completedCount} totalCount={progress.totalCount} />
       <ItemForm
         onAdd={activeTab === "today" ? planner.addTodayTodo : activeTab === "week" ? planner.addWeeklyTodo : planner.addWeeklyGoal}
