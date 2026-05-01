@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { loadPlannerData, savePlannerData } from "@/lib/storage";
-import { Category, PlannerData, PlannerItem, Priority } from "@/types/planner";
+import { Category, PlannerData, PlannerItem, Priority, TimeBlock, initialPlannerData } from "@/types/planner";
 import { clampProgress } from "@/lib/utils";
 
 type NewItemInput = {
@@ -10,6 +10,7 @@ type NewItemInput = {
   priority: Priority;
   isImportant: boolean;
   progress: number;
+  timeBlock: TimeBlock;
 };
 
 export type UpdateItemInput = NewItemInput;
@@ -21,7 +22,7 @@ const createId = (): string => {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 };
 
-const createItem = ({ title, memo, category, priority, isImportant, progress }: NewItemInput): PlannerItem => {
+const createItem = ({ title, memo, category, priority, isImportant, progress, timeBlock }: NewItemInput): PlannerItem => {
   const safeProgress = clampProgress(progress);
   return {
     id: createId(),
@@ -31,6 +32,7 @@ const createItem = ({ title, memo, category, priority, isImportant, progress }: 
     priority,
     isImportant,
     progress: safeProgress,
+    timeBlock,
     completed: safeProgress === 100,
     createdAt: new Date().toISOString(),
   };
@@ -57,16 +59,28 @@ const update = (items: PlannerItem[], id: string, input: UpdateItemInput) =>
       priority: input.priority,
       isImportant: input.isImportant,
       progress: safeProgress,
+      timeBlock: input.timeBlock,
       completed: safeProgress === 100,
     };
   });
 
 export function usePlannerData() {
-  const [data, setData] = useState<PlannerData>(() => loadPlannerData());
+  const [data, setData] = useState<PlannerData>(initialPlannerData);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
+    const loadedData = loadPlannerData();
+    const timer = window.setTimeout(() => {
+      setData(loadedData);
+      setHasLoaded(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoaded) return;
     savePlannerData(data);
-  }, [data]);
+  }, [data, hasLoaded]);
 
   return {
     data,

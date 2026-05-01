@@ -1,4 +1,4 @@
-import { PlannerData, PlannerItem, Priority, initialPlannerData } from "@/types/planner";
+import { PlannerData, PlannerItem, Priority, TimeBlock, initialPlannerData } from "@/types/planner";
 import { clampProgress } from "@/lib/utils";
 
 export const STORAGE_KEY = "life-planner-mobile-data";
@@ -6,6 +6,11 @@ export const STORAGE_KEY = "life-planner-mobile-data";
 const normalizePriority = (priority: unknown): Priority => {
   if (priority === "high" || priority === "medium" || priority === "low") return priority;
   return "medium";
+};
+
+const normalizeTimeBlock = (timeBlock: unknown): TimeBlock => {
+  if (timeBlock === "morning" || timeBlock === "afternoon" || timeBlock === "evening" || timeBlock === "night" || timeBlock === "anytime") return timeBlock;
+  return "anytime";
 };
 
 const normalizeItem = (item: Partial<PlannerItem>): PlannerItem => {
@@ -20,6 +25,7 @@ const normalizeItem = (item: Partial<PlannerItem>): PlannerItem => {
     priority: normalizePriority(item.priority),
     isImportant: Boolean(item.isImportant),
     progress,
+    timeBlock: normalizeTimeBlock(item.timeBlock),
     completed: progress === 100,
     createdAt: item.createdAt ?? new Date().toISOString(),
   };

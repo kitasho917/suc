@@ -1,4 +1,4 @@
-import { Category, Priority } from "@/types/planner";
+import { Category, Priority, TimeBlock } from "@/types/planner";
 
 export const categories: Category[] = ["TOEIC", "院試", "筋トレ", "就職準備", "生活習慣", "その他"];
 
@@ -23,4 +23,23 @@ export const priorityStyleMap: Record<Priority, string> = {
   high: "bg-rose-100 text-rose-700",
   medium: "bg-orange-100 text-orange-700",
   low: "bg-slate-100 text-slate-700",
+};
+
+
+export const timeBlocks: TimeBlock[] = ["morning", "afternoon", "evening", "night", "anytime"];
+
+export const timeBlockLabelMap: Record<TimeBlock, string> = {
+  morning: "朝",
+  afternoon: "昼",
+  evening: "夕方",
+  night: "夜",
+  anytime: "いつでも",
+};
+
+export const timeBlockStyleMap: Record<TimeBlock, string> = {
+  morning: "bg-sky-100 text-sky-700",
+  afternoon: "bg-yellow-100 text-yellow-700",
+  evening: "bg-orange-100 text-orange-700",
+  night: "bg-indigo-100 text-indigo-700",
+  anytime: "bg-gray-100 text-gray-700",
 };

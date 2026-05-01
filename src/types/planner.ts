@@ -8,6 +8,8 @@ export type Category =
 
 export type Priority = "high" | "medium" | "low";
 
+export type TimeBlock = "morning" | "afternoon" | "evening" | "night" | "anytime";
+
 export type PlannerItem = {
   id: string;
   title: string;
@@ -16,6 +18,7 @@ export type PlannerItem = {
   priority: Priority;
   isImportant: boolean;
   progress: number;
+  timeBlock: TimeBlock;
   completed: boolean;
   createdAt: string;
 };
