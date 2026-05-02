@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loadPlannerData, savePlannerData } from "@/lib/storage";
+import { loadPlannerData, normalizePlannerData, savePlannerData } from "@/lib/storage";
 import { Category, PlannerData, PlannerItem, Priority, TimeBlock, initialPlannerData } from "@/types/planner";
 import { clampProgress } from "@/lib/utils";
 
@@ -84,6 +84,9 @@ export function usePlannerData() {
 
   return {
     data,
+    exportPlannerData: () => data,
+    importPlannerData: (nextData: PlannerData) => setData(normalizePlannerData(nextData)),
+    resetPlannerData: () => setData(initialPlannerData),
     addTodayTodo: (item: NewItemInput) => setData((prev) => ({ ...prev, todayTodos: [createItem(item), ...prev.todayTodos] })),
     addWeeklyTodo: (item: NewItemInput) => setData((prev) => ({ ...prev, weeklyTodos: [createItem(item), ...prev.weeklyTodos] })),
     addWeeklyGoal: (item: NewItemInput) => setData((prev) => ({ ...prev, weeklyGoals: [createItem(item), ...prev.weeklyGoals] })),

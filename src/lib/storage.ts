@@ -36,6 +36,25 @@ const normalizeItems = (items: unknown): PlannerItem[] => {
   return items.map((item) => normalizeItem((item ?? {}) as Partial<PlannerItem>));
 };
 
+export function isPlannerDataLike(raw: unknown): boolean {
+  if (!raw || typeof raw !== "object") return false;
+  const maybe = raw as Partial<PlannerData>;
+  return Array.isArray(maybe.todayTodos) && Array.isArray(maybe.weeklyTodos) && Array.isArray(maybe.weeklyGoals);
+}
+
+export function normalizePlannerData(raw: unknown): PlannerData {
+  if (!raw || typeof raw !== "object") {
+    return initialPlannerData;
+  }
+
+  const parsed = raw as Partial<PlannerData>;
+  return {
+    todayTodos: normalizeItems(parsed.todayTodos),
+    weeklyTodos: normalizeItems(parsed.weeklyTodos),
+    weeklyGoals: normalizeItems(parsed.weeklyGoals),
+  };
+}
+
 export function loadPlannerData(): PlannerData {
   if (typeof window === "undefined") {
     return initialPlannerData;
@@ -45,12 +64,8 @@ export function loadPlannerData(): PlannerData {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return initialPlannerData;
 
-    const parsed = JSON.parse(raw) as Partial<PlannerData>;
-    return {
-      todayTodos: normalizeItems(parsed.todayTodos),
-      weeklyTodos: normalizeItems(parsed.weeklyTodos),
-      weeklyGoals: normalizeItems(parsed.weeklyGoals),
-    };
+    const parsed = JSON.parse(raw) as unknown;
+    return normalizePlannerData(parsed);
   } catch {
     return initialPlannerData;
   }
