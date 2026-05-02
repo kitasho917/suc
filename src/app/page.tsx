@@ -6,6 +6,7 @@ import { ItemForm } from "@/components/ItemForm";
 import { CategoryProgressDashboard } from "@/components/CategoryProgressDashboard";
 import { AchievementSummary } from "@/components/AchievementSummary";
 import { TimeSchedule } from "@/components/TimeSchedule";
+import { DataManagementPanel } from "@/components/DataManagementPanel";
 import { ItemList } from "@/components/ItemList";
 import { ProgressSummary } from "@/components/ProgressSummary";
 import { TodaySummary } from "@/components/TodaySummary";
@@ -56,6 +57,13 @@ export default function Home() {
         onDelete={activeTab === "today" ? planner.deleteTodayTodo : activeTab === "week" ? planner.deleteWeeklyTodo : planner.deleteWeeklyGoal}
         onEdit={activeTab === "today" ? planner.updateTodayTodo : activeTab === "week" ? planner.updateWeeklyTodo : planner.updateWeeklyGoal}
       />
+      {activeTab === "goals" ? (
+        <DataManagementPanel
+          data={planner.exportPlannerData()}
+          onImport={planner.importPlannerData}
+          onReset={planner.resetPlannerData}
+        />
+      ) : null}
       <BottomNav activeTab={activeTab} onChangeTab={setActiveTab} />
     </main>
   );
